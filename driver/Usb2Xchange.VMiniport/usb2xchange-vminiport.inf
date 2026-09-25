@@ -1,0 +1,59 @@
+; Copyright (c) 2026 fcusb contributors; SPDX-License-Identifier: GPL-3.0-only
+; Source package definition for the USB2Xchange virtual Storport miniport.
+; Building only emits an unsigned package under out; it does not install or load it.
+
+[Version]
+Signature   = "$Windows NT$"
+Class       = SCSIAdapter
+ClassGuid   = {4D36E97B-E325-11CE-BFC1-08002BE10318}
+Provider    = %ManufacturerName%
+CatalogFile = usb2xchange-vminiport.cat
+DriverVer   = 08/07/2026,0.1.0.7
+PnpLockdown = 1
+
+[Manufacturer]
+%ManufacturerName% = Models,NTamd64.10.0
+
+[Models.NTamd64.10.0]
+%DeviceName% = Usb2Xchange_Install, Root\USB2XCHANGEVMINIPORT
+
+[DestinationDirs]
+DriverCopyFiles = 12
+
+[SourceDisksNames]
+1 = %DiskName%,,,
+
+[SourceDisksFiles]
+usb2xchange-vminiport.sys = 1
+
+[Usb2Xchange_Install.NT]
+CopyFiles = DriverCopyFiles
+AddReg    = Usb2Xchange_DeviceSettings
+
+[Usb2Xchange_DeviceSettings]
+HKR,,DeviceCharacteristics,0x00010001,0x00000100
+HKR,,Security,,"D:P(A;;GA;;;SY)(A;;GA;;;BA)"
+
+[DriverCopyFiles]
+usb2xchange-vminiport.sys
+
+[Usb2Xchange_Install.NT.Services]
+AddService = usb2xchange-vminiport,0x00000002,Usb2Xchange_Service
+
+[Usb2Xchange_Service]
+DisplayName   = %ServiceName%
+ServiceType   = 1
+StartType     = 3
+ErrorControl  = 1
+ServiceBinary = %12%\usb2xchange-vminiport.sys
+LoadOrderGroup = SCSI Miniport
+AddReg         = Usb2Xchange_ServiceParameters
+
+[Usb2Xchange_ServiceParameters]
+HKR,Parameters,BusType,0x00010001,0x0000000E
+
+[Strings]
+ManufacturerName = "USB2Xchange Community Project"
+DeviceName       = "USB2Xchange Virtual SCSI Adapter"
+ServiceName      = "USB2Xchange Virtual SCSI Miniport"
+DiskName         = "USB2Xchange Virtual Miniport Installation Media"

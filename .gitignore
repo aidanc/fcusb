@@ -1,0 +1,44 @@
+# Copyright (c) 2026 fcusb contributors; SPDX-License-Identifier: GPL-3.0-only
+reference/legacy/*
+!reference/legacy/.gitkeep
+# Private third-party research inputs; never publish.
+reference/upstream/*
+!reference/upstream/.gitkeep
+captures/
+dumps/
+*.dmp
+*.pcap
+*.pcapng
+build/
+out/
+output/
+tmp/
+x64/
+Debug/
+Release/
+.vs/
+.codex-log/
+driver/*.cat
+driver/*.cer
+driver/*.pfx
+
+# Generated proprietary reverse-engineering artifacts
+analysis/legacy/
+analysis/flexcolor-4.0.3/
+analysis/flexcolor-4.8.9/
+analysis/
+reference/
+*.exe
+*.dll
+*.sys
+*.fw
+*.fff
+*.3fr
+*.tif
+*.tiff
+*.pdf
+*.zip
+*.log
+*.pdb
+*.bin
+MICROCOD.*
