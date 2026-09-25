@@ -12,3 +12,7 @@ See [release notes](RELEASE_NOTES.md) for availability and qualification.
 Normal flow: Set up → risk acknowledgement → Adapter setup for both PIDs →
 FlexColor with USB2Xchange. Use [daily use](DAILY_USE.md),
 [troubleshooting](TROUBLESHOOTING.md) and [uninstall](UNINSTALL.md).
+
+Start with the [illustrated guide](USER_GUIDE.md), also shipped as offline
+`docs/USER_GUIDE.html`. The ZIP includes `Try demo.cmd`; manager **Try demo**
+opens a separate isolated session without proprietary inputs or hardware.

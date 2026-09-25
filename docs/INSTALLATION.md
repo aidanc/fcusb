@@ -16,9 +16,10 @@ legacy XP Adaptec driver or change Secure Boot/signature enforcement.
 2. Read [external prerequisites](REQUIRED_EXTERNAL_FILES.md). Copy your complete
    licensed English FlexColor 4.0.3 tree and exact x86 VC++ 7.1 runtime to a
    local input folder. Keep its Firmware folder intact. Verify every hash.
-3. Build the public source using [BUILDING](BUILDING.md). Until an owner-approved
-   release exists, no GitHub setup download is implied. For a future release,
-   verify the adjacent ZIP/setup SHA-256 and exact source commit before running:
+3. Download the [v0.1.0-poc.1 prerelease](https://github.com/aidanc/fcusb/releases/tag/v0.1.0-poc.1),
+   or build using [BUILDING](BUILDING.md). The [illustrated guide](USER_GUIDE.md)
+   explains the assets and hardware-free demo. Verify the adjacent ZIP/setup
+   SHA-256 and exact source commit before running:
 
    ```powershell
    Get-FileHash -Algorithm SHA256 .\USB2Xchange-Setup-<commit>.exe

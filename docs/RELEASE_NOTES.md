@@ -1,5 +1,5 @@
 <!-- Copyright (c) 2026 fcusb contributors; SPDX-License-Identifier: GPL-3.0-only -->
-# Experimental proof-of-concept source publication
+# v0.1.0-poc.1 — experimental downloadable prerelease
 
 > **EXPERIMENTAL SOFTWARE — USE AT YOUR OWN RISK.** Defects, unsupported hardware
 > or interrupted firmware/scanner operation can cause failed scans, data loss,
@@ -12,10 +12,17 @@ offline tests under GPL-3.0-only. It adds public setup/acquisition/support guide
 first-use acknowledgement, legal notices in packaging and dedicated 3F structure
 documentation. Proprietary prerequisites are separately obtained by users.
 
-The candidate prerelease name is **v0.1.0-poc.1**, pending owner confirmation.
-No immutable tag or GitHub release is created by source publication. Locally
-built setup/ZIP artifacts are unsigned experimental candidates, not production
-downloads; each manifest identifies its exact public source commit and SHA-256.
+This owner-approved prerelease adds a ready-to-run unsigned setup EXE and
+runtime ZIP, exact source ZIP and SHA-256 manifests. The manifests identify
+the full public source commit. No proprietary prerequisite is bundled.
+
+New in this release: an explicitly isolated `--demo` manager mode, **Try demo**
+and **User guide** buttons, a double-click ZIP demo launcher, and an illustrated
+offline HTML/Markdown guide with five exports of the actual demo application.
+Demo install, two-PID configuration, Start/Stop, repair and uninstall use only
+memory. Unknown demo actions fail closed. This models manager state, not USB
+or scanner behavior, and never launches FlexColor. The developer-only
+`--demo-export <empty-folder>` command exports the actual forms to five PNGs.
 
 Prior clean Windows 10/11 portable runtime results are in
 [KNOWN_LIMITATIONS](KNOWN_LIMITATIONS.md). The updated GUI workflow still needs

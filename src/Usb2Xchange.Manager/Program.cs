@@ -29,6 +29,19 @@ namespace Usb2Xchange.Manager
                 return File.Exists(EndUserScriptPath) ? 0 : 1;
             }
 
+            if (arguments.Length == 1 && arguments[0] == "--demo-self-test")
+                return DemoSession.SelfTest();
+            if (arguments.Length == 2 && arguments[0] == "--demo-export")
+            {
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                return DemoSession.ExportScreens(arguments[1]);
+            }
+            if (arguments.Length == 1 && arguments[0] == "--demo")
+                DemoSession.Begin();
+            else if (arguments.Length != 0 && !(arguments.Length == 1 && arguments[0] == "--start"))
+                return 2;
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
@@ -115,6 +128,7 @@ namespace Usb2Xchange.Manager
         {
             get
             {
+                if (DemoSession.Enabled) return DemoSession.Installed;
                 return File.Exists(ConfigurationPath) &&
                     File.Exists(InstalledManagerPath);
             }
@@ -200,6 +214,7 @@ namespace Usb2Xchange.Manager
         internal static ScriptResult Run(string action,
             params KeyValuePair<string, string>[] options)
         {
+            if (DemoSession.Enabled) return DemoSession.Run(action);
             if (ExperimentalRisk.RequiresAcknowledgement(action) &&
                 !ExperimentalRisk.EnsureAcknowledged())
             {
@@ -283,6 +298,7 @@ namespace Usb2Xchange.Manager
 
         internal static int RunElevated(string action)
         {
+            if (DemoSession.Enabled) return DemoSession.Run(action).ExitCode;
             if (ExperimentalRisk.RequiresAcknowledgement(action) &&
                 !ExperimentalRisk.EnsureAcknowledged())
             {
@@ -314,6 +330,7 @@ namespace Usb2Xchange.Manager
 
         internal static void StartDetachedUninstall(int managerProcessId)
         {
+            if (DemoSession.Enabled) { DemoSession.Run("Uninstall"); return; }
             List<string> arguments = new List<string>();
             arguments.Add("-NoProfile");
             arguments.Add("-ExecutionPolicy");
@@ -457,7 +474,7 @@ namespace Usb2Xchange.Manager
             logsButton.Click += delegate
             {
                 ScriptResult result = ScriptRunner.Run("OpenLogs");
-                if (result.ExitCode != 0)
+                if (result.ExitCode != 0 || DemoSession.Enabled)
                 {
                     Program.ShowResult(result, "Logs opened");
                 }
@@ -468,9 +485,22 @@ namespace Usb2Xchange.Manager
 
             Button refreshButton = NewButton("Refresh status", 24, 334, 130);
             refreshButton.Click += delegate { RefreshStatus(); };
+            Button guideButton = NewButton("User guide", 166, 334, 130);
+            guideButton.Click += delegate {
+                string guide = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "docs", "USER_GUIDE.html");
+                if (!File.Exists(guide)) guide = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "docs", "USER_GUIDE.html"));
+                if (File.Exists(guide)) Process.Start(new ProcessStartInfo(guide) { UseShellExecute = true });
+                else MessageBox.Show("See docs/USER_GUIDE.md in the full package.");
+            };
+            Button demoButton = NewButton(DemoSession.Enabled ? "Reset demo" : "Try demo", 308, 334, 130);
+            demoButton.Click += delegate {
+                if (DemoSession.Enabled) { DemoSession.Begin(); RefreshStatus(); }
+                else Process.Start(new ProcessStartInfo(Application.ExecutablePath, "--demo") { UseShellExecute = true });
+            };
             Button closeButton = NewButton("Close", 456, 334, 130);
             closeButton.Click += delegate { Close(); };
 
+            DemoSession.Decorate(this);
             Shown += delegate { RefreshStatus(); };
         }
 
@@ -512,7 +542,7 @@ namespace Usb2Xchange.Manager
                 if (form.ShowDialog(this) == DialogResult.OK)
                 {
                     RefreshStatus();
-                    if (InstallationState.IsInstalled &&
+                    if (!DemoSession.Enabled && InstallationState.IsInstalled &&
                         !Path.GetFullPath(Application.ExecutablePath).Equals(
                             Path.GetFullPath(
                                 InstallationState.InstalledManagerPath),
@@ -618,6 +648,11 @@ namespace Usb2Xchange.Manager
             cancel.DialogResult = DialogResult.Cancel;
             Controls.Add(cancel);
             CancelButton = cancel;
+            if (DemoSession.Enabled) {
+                firmwareText.Text = @"C:\example-inputs\usb2xchange.fw";
+                runtimeText.Text = @"C:\example-inputs\vc71";
+            }
+            DemoSession.Decorate(this);
         }
 
         private TextBox AddPathRow(string labelText, int y, bool folder,
@@ -639,6 +674,8 @@ namespace Usb2Xchange.Manager
             browse.Text = "Browse...";
             browse.Location = new Point(536, y + 20);
             browse.Size = new Size(90, 27);
+            browse.Enabled = !DemoSession.Enabled;
+            textBox.ReadOnly = DemoSession.Enabled;
             browse.Click += delegate
             {
                 if (folder)
@@ -677,8 +714,8 @@ namespace Usb2Xchange.Manager
 
         private void InstallClicked(object sender, EventArgs e)
         {
-            if (!Directory.Exists(sourceText.Text) ||
-                !File.Exists(firmwareText.Text))
+            if (!DemoSession.Enabled && (!Directory.Exists(sourceText.Text) ||
+                !File.Exists(firmwareText.Text)))
             {
                 MessageBox.Show(
                     "Select the FlexColor folder and USB2Xchange firmware file.",
@@ -758,8 +795,10 @@ namespace Usb2Xchange.Manager
             Controls.Add(statusText);
 
             Button deviceManager = NewButton("Open Device Manager", 26, 270, 184);
+            if (DemoSession.Enabled) deviceManager.Text = "Simulate WinUSB selection";
             deviceManager.Click += delegate
             {
+                if (DemoSession.Enabled) { DemoSession.SelectWinUsb(); RefreshStatus(); return; }
                 Process.Start("devmgmt.msc");
             };
 
@@ -802,6 +841,7 @@ namespace Usb2Xchange.Manager
             Button close = NewButton("Close", 504, 326, 130);
             close.Click += delegate { Close(); };
 
+            DemoSession.Decorate(this);
             Shown += delegate { RefreshStatus(); };
         }
 

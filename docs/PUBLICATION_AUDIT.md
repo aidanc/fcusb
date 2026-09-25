@@ -26,7 +26,9 @@ publication validation performs no USB/scanner operations.
 
 ## Review results (2026-09-25)
 
-- The reviewed source is UTF-8 text: no NUL-bearing or binary dependency file.
+- The initial reviewed source was UTF-8 text with no binary dependency file.
+  The prerelease additionally includes five reviewed project-owned PNG screen
+  exports; provenance and SHA-256 values are in images/README.md.
   Whole-file hashes were compared with the known proprietary inputs; forbidden
   extensions and private/generated directory names were checked. Configuration
   files named `FlexColor.exe.config` and `wnaspi32.dll.config` are text, not DLLs.
@@ -48,7 +50,7 @@ publication validation performs no USB/scanner operations.
   Its stock application example does not change this project's version-only
   selection. `.gitattributes` preserves its exact bytes on checkout.
 - `git diff --check`, internal Markdown link validation, source-release audit
-  and the explicit **46-file** binary allowlist audit passed. The allowlist
+  and the explicit **55-file** binary allowlist audit passed. The allowlist
   includes license/notices and public operator/evidence documentation, with no
   vendor payload, firmware, kernel binary, certificate, PDB or log.
 - Full `test.ps1` passed: protocol 25/25, patch 11/11, ASPI 78/78,
@@ -67,5 +69,6 @@ publication validation performs no USB/scanner operations.
 
 Package generation reruns the complete suite from its clean public commit and
 tests bootstrap extraction, packaged manager startup and cleanup. The adjacent
-artifact manifest records exact commit and setup/ZIP SHA-256; local candidates
-are not a GitHub release. No tag/release version is adopted by these checks.
+artifact manifest records exact commit and setup/ZIP SHA-256; the owner-approved v0.1.0-poc.1 release publishes these reviewed assets.
+Demo tests cover fail-closed routing and the complete two-identity lifecycle;
+screen exports were visually reviewed. This is not live hardware acceptance.

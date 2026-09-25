@@ -79,6 +79,14 @@ $proprietaryHashes = @(
     'FA2629BDF855B5A320D2C184B40FFB2B780D8FDB67491504CEF2C5AA0E3E8381'
 )
 
+$reviewedScreens = @{
+    'docs/images/01-manager.png' = 'B88828B6686719CE8F13880ADA784D25518173DF4016B8A80350E0625CAF1C33'
+    'docs/images/02-setup.png' = '9C66C23C593D4756E8ED13AC660B71299E4D00CEF6C9B52D23CD8C84CD6C7190'
+    'docs/images/03-adapter-loader.png' = 'F469CFB3DD3BC6A28F775FF00BC8D4561805C70504E5E9ABE556AEB75A90D75C'
+    'docs/images/04-adapter-ready.png' = '2825E48951114FF5B339389EF35E5367EB8D3F321E8107F6D7FB9035C7BDABC8'
+    'docs/images/05-session.png' = '7368F11E7F85E48882A506BBB154D8BF2AB35E0DDBF8035433DC3E30FABE6A5B'
+}
+
 $violations = New-Object Collections.Generic.List[string]
 foreach ($relativePath in $tracked) {
     $normalized = $relativePath.Replace('\', '/')
@@ -121,6 +129,10 @@ foreach ($relativePath in $tracked) {
         continue
     }
     $hash = (Get-FileHash -Algorithm SHA256 -LiteralPath $fullPath).Hash
+    if ($extension -ieq '.png' -and
+        ($reviewedScreens[$normalized] -ne $hash)) {
+        $violations.Add("unreviewed screenshot: $normalized")
+    }
     if ($proprietaryHashes -contains $hash) {
         $violations.Add("known proprietary content hash is tracked: $normalized")
     }

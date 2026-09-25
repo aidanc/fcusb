@@ -219,6 +219,10 @@ foreach ($preservationFile in $cleanPreservationFiles) {
     Remove-Item -LiteralPath $preservationFile -Force
 }
 
+$demoTest = Start-Process -FilePath (Join-Path $repoRoot 'out\bin\usb2xchange-manager.exe') -ArgumentList '--demo-self-test' -WindowStyle Hidden -Wait -PassThru
+if ($demoTest.ExitCode -ne 0) { throw "Manager demo self-test failed: $($demoTest.ExitCode)" }
+Write-Output 'Manager demo: fail-closed routing and complete two-identity lifecycle passed.'
+
 $testExecutable = Join-Path $repoRoot 'out\bin\Usb2Xchange.Tests.exe'
 & $testExecutable
 if ($LASTEXITCODE -ne 0) {

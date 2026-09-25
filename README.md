@@ -24,20 +24,27 @@ registers the interface and handles later firmware initialization.
 
 ## Start here
 
-1. Read [Installation](docs/INSTALLATION.md), [required external files and exact
-   hashes](docs/REQUIRED_EXTERNAL_FILES.md), and [limitations](docs/KNOWN_LIMITATIONS.md).
-2. Supply your own licensed complete FlexColor tree, scanner firmware,
-   `usb2xchange.fw`, and the exact x86 VC++ 7.1 DLLs. None are included.
-3. [Build](docs/BUILDING.md) the source. Packaging produces a single-file
-   `USB2Xchange-Setup-<commit>.exe` and an inspectable
-   `usb2xchange-runtime-<commit>.zip`. **No tagged binary release is promised by
-   this initial source publication.** Use only artifacts whose commit and
-   SHA-256 you can verify; both formats currently build unsigned.
+**[Download v0.1.0-poc.1](https://github.com/aidanc/fcusb/releases/tag/v0.1.0-poc.1)**
+— unsigned experimental setup EXE, runtime ZIP, exact source ZIP and SHA-256 manifests.
+
+1. Follow the **[illustrated user guide](docs/USER_GUIDE.md)**. No compiler is
+   needed for the downloadable runtime.
+2. Want to explore without a scanner? Extract the runtime ZIP and double-click
+   **Try demo.cmd**, or choose **Try demo** in the manager. The same setup and
+   adapter screens run entirely in memory with a prominent demo banner.
+3. For real operation, read [Installation](docs/INSTALLATION.md),
+   [required external files and hashes](docs/REQUIRED_EXTERNAL_FILES.md) and
+   [limitations](docs/KNOWN_LIMITATIONS.md). Supply your own licensed inputs.
 4. Run setup, prepare the private application copy, acknowledge the first-use
-   hardware warning, then complete [both WinUSB bindings](docs/USB2XCHANGE_WINUSB_SETUP.md).
-5. For [daily use](docs/DAILY_USE.md), turn on the scanner and use **FlexColor
-   with USB2Xchange**. Normal Start initializes the adapter and launches only
-   the prepared private FlexColor process.
+   hardware warning, and configure [both WinUSB identities](docs/USB2XCHANGE_WINUSB_SETUP.md).
+5. Use **FlexColor with USB2Xchange** for [daily operation](docs/DAILY_USE.md).
+   Developers can still [build from source](docs/BUILDING.md).
+
+![The actual manager running its hardware-free demo](docs/images/05-session.png)
+
+The download includes an offline illustrated guide: choose **User guide** in
+the manager or open `docs/USER_GUIDE.html`. Demo mode rehearses the manager
+workflow; it does not emulate the FlexColor scan interface or validate hardware.
 
 The script-driven portable runtime has recorded clean Windows 10 and 11
 Preview/full Scan/save/reconnect acceptance. The newer setup/manager/shortcut,

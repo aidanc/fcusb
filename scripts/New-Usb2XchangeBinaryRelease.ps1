@@ -40,6 +40,15 @@ if ($LASTEXITCODE -ne 0 -or $commit -notmatch '^[0-9a-f]{40}$') {
 }
 
 $files = @(
+    @{ Source = 'docs/USER_GUIDE.md'; Path = 'docs/USER_GUIDE.md' },
+    @{ Source = 'docs/USER_GUIDE.html'; Path = 'docs/USER_GUIDE.html' },
+    @{ Source = 'docs/images/README.md'; Path = 'docs/images/README.md' },
+    @{ Source = 'docs/images/01-manager.png'; Path = 'docs/images/01-manager.png' },
+    @{ Source = 'docs/images/02-setup.png'; Path = 'docs/images/02-setup.png' },
+    @{ Source = 'docs/images/03-adapter-loader.png'; Path = 'docs/images/03-adapter-loader.png' },
+    @{ Source = 'docs/images/04-adapter-ready.png'; Path = 'docs/images/04-adapter-ready.png' },
+    @{ Source = 'docs/images/05-session.png'; Path = 'docs/images/05-session.png' },
+    @{ Source = 'scripts/Try-Demo.cmd'; Path = 'Try demo.cmd' },
     @{ Source = 'out/bin/usb2xchange-manager.exe'; Path = 'USB2Xchange.exe' },
     @{ Source = 'out/bin/usb2xchange.exe'; Path = 'out/bin/usb2xchange.exe' },
     @{ Source = 'out/bin/Usb2Xchange.WinUsb.dll'; Path = 'out/bin/Usb2Xchange.WinUsb.dll' },

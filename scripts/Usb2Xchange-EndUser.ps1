@@ -95,7 +95,7 @@ function Get-PackageManifest {
     if ($manifest.Schema -ne 1 -or
         $manifest.PackageType -ne 'PortableUserModeRuntime' -or
         $manifest.Commit -notmatch '^[0-9a-f]{40}$' -or
-        $null -eq $manifest.Files -or $manifest.Files.Count -ne 46) {
+        $null -eq $manifest.Files -or $manifest.Files.Count -ne 55) {
         throw 'The USB2Xchange package manifest is invalid.'
     }
     $seen = @{}

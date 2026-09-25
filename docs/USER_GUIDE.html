@@ -1,0 +1,245 @@
+<!doctype html>
+<!-- Copyright (c) 2026 fcusb contributors; SPDX-License-Identifier: GPL-3.0-only -->
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>USB2Xchange illustrated user guide</title>
+<style>
+:root{color-scheme:light}body{margin:0;background:#edf1f5;color:#203040;font:17px/1.65 system-ui,sans-serif}
+main{max-width:920px;margin:auto;padding:40px;background:white}h1,h2{line-height:1.25;color:#122c45}
+h1{font-size:2.2rem}h2{margin-top:3rem;border-top:2px solid #e1e8ee;padding-top:1.4rem}
+a{color:#075cab}img{display:block;max-width:100%;height:auto;margin:24px auto;border:1px solid #b8c6d2}
+table{border-collapse:collapse;width:100%;font-size:.94rem}th,td{text-align:left;vertical-align:top;border:1px solid #ccd6df;padding:10px;overflow-wrap:anywhere}th{background:#edf3f8}
+pre{background:#edf3f8;padding:16px;overflow:auto}code{font-size:.88em}li{margin:.6em 0}
+@media(max-width:650px){main{padding:20px}body{font-size:16px}h1{font-size:1.8rem}}
+@media print{body{background:white}main{padding:0}h2{break-after:avoid}img,table{break-inside:avoid}}
+</style><main>
+<!-- Copyright (c) 2026 fcusb contributors; SPDX-License-Identifier: GPL-3.0-only -->
+<h1 id="usb2xchange-for-flexcolor-illustrated-user-guide">USB2Xchange for FlexColor: illustrated user guide</h1>
+<p><strong>Start with the demo if you want to explore without connecting a scanner.</strong>
+The manager can rehearse setup, adapter initialization and starting/stopping a
+session without FlexColor, firmware, administrator rights or USB hardware.</p>
+<p><strong>Experimental software — use at your own risk.</strong> Real operation can cause
+failed scans, data loss, device malfunction or hardware damage. No warranty,
+recovery or individual support is promised. Read <a href="../DISCLAIMER.md">DISCLAIMER</a>.</p>
+<h2 id="1-download-and-open">1. Download and open</h2>
+<p>Open the <a href="https://github.com/aidanc/fcusb/releases/tag/v0.1.0-poc.1">v0.1.0-poc.1 download page</a>.
+Expand <strong>Assets</strong> if GitHub collapses the list. You do not need to build from
+source to try this release.</p>
+<table>
+<thead>
+<tr>
+<th>Download</th>
+<th>Use it for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>USB2Xchange-Setup-&lt;commit&gt;.exe</code></td>
+<td>Easiest way to open the setup manager. It extracts the same project files as the runtime ZIP.</td>
+</tr>
+<tr>
+<td><code>usb2xchange-runtime-&lt;commit&gt;.zip</code></td>
+<td>Inspectable package. Extract <strong>all</strong> files, open the extracted folder, then run <code>USB2Xchange.exe</code>. Keep its subfolders together.</td>
+</tr>
+<tr>
+<td><code>usb2xchange-source-&lt;commit&gt;.zip</code></td>
+<td>Developers who want to inspect or rebuild the exact source. This is not the ready-to-run application.</td>
+</tr>
+<tr>
+<td><code>*.sha256.txt</code></td>
+<td>Expected SHA-256 values and the full source commit for the adjacent assets.</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>&lt;commit&gt;</code> suffix identifies the build, not another file you must download.
+Choose either setup or runtime ZIP. Both are unsigned community builds.
+Before opening a download, compare its hash with the release manifest:</p>
+<pre><code class="language-powershell">Get-FileHash -Algorithm SHA256 .\USB2Xchange-Setup-&lt;commit&gt;.exe
+</code></pre>
+<p>Use the actual filename. Check that the entire hash matches. An unsigned or
+unknown-publisher warning is expected; decide whether you trust the reviewed
+source and release. Do not globally disable Windows protections. See
+<a href="INSTALLATION.md">Installation</a> for signature inspection and package checks.</p>
+<h2 id="2-try-it-with-no-hardware">2. Try it with no hardware</h2>
+<p>In the extracted runtime folder, double-click <strong>Try demo.cmd</strong>. Alternatively,
+open the manager and choose <strong>Try demo</strong>. A separate window opens with <strong>[DEMO]</strong>
+in its title and a yellow banner. From a terminal the equivalent is:</p>
+<pre><code class="language-powershell">.\USB2Xchange.exe --demo
+</code></pre>
+<p><img alt="Manager before setup, showing the yellow demo banner" src="images/01-manager.png" /></p>
+<p>These pictures are exports of the actual Windows Forms application in demo
+mode, using its own rendering. They are not drawings of a proposed interface
+or evidence of connected hardware. Every example path and adapter state is
+simulated. Windows themes and scaling may look different on your PC.</p>
+<ol>
+<li>Choose <strong>Set up</strong>. Example paths are already filled in; the demo does not read them.</li>
+<li>Choose <strong>Install</strong>, then dismiss the success message. No files or shortcuts are installed.</li>
+<li>Open <strong>Adapter setup</strong>. Choose <strong>Simulate WinUSB selection</strong>, then <strong>Register interface</strong>.</li>
+<li>Choose <strong>Initialize adapter</strong>. The simulated device changes from PID 2002 to PID 2003.</li>
+<li>Choose <strong>Simulate WinUSB selection</strong> and <strong>Register interface</strong> again for PID 2003.</li>
+<li>Close Adapter setup. Choose <strong>Start FlexColor</strong>. The manager reports a simulated session; no FlexColor process opens.</li>
+<li>Try <strong>Stop FlexColor</strong>, <strong>Repair installation</strong> or <strong>Open logs</strong>. They return simulated results. <strong>Reset demo</strong> starts over.</li>
+</ol>
+<p>Closing the demo discards its state. Demo <strong>Uninstall</strong> resets its memory and
+closes it; it cannot remove a real installation. To work with real equipment,
+close the demo and open the normal manager. The demo never switches to live
+hardware in the same process.</p>
+<p>This rehearses the <strong>manager workflow</strong>, not the FlexColor scanning interface.
+It does not simulate preview images, scan quality, SCSI timing, firmware
+transfers, UAC or Windows driver installation. Existing offline protocol/ASPI
+tests cover separate logic. Real scanner acceptance remains necessary.</p>
+<h2 id="3-prepare-for-real-setup">3. Prepare for real setup</h2>
+<p>Use Windows 10 or 11 <strong>x64</strong>, Windows PowerShell 5.1 and .NET Framework 4.8.
+Read <a href="WINDOWS_10_11_SETUP.md">Windows prerequisites</a>. The supported combination
+is English FlexColor <strong>4.0.3</strong>, Adaptec <strong>USB2Xchange</strong> and FlexTight <strong>Precision II</strong>
+at SCSI target <strong>5</strong>, LUN <strong>0</strong>. Other versions and adapters are not qualified.</p>
+<p>Before you start, gather these separately licensed inputs:</p>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Where it belongs in setup</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Complete English FlexColor 4.0.3 folder, including its <code>Firmware</code> folder</td>
+<td><strong>FlexColor 4.0.3 folder</strong></td>
+</tr>
+<tr>
+<td>Exact <code>usb2xchange.fw</code> adapter image</td>
+<td><strong>USB2Xchange firmware</strong></td>
+</tr>
+<tr>
+<td>Exact x86 VC++ 7.1 DLLs, if absent from the supported automatic locations</td>
+<td><strong>VC++ 7.1 folder (optional)</strong></td>
+</tr>
+</tbody>
+</table>
+<p>None of those proprietary files are in the release. Follow
+<a href="REQUIRED_EXTERNAL_FILES.md">required files and exact hashes</a> for acquisition,
+validation and the local adapter-firmware extractor. A modern VC++ runtime
+is not a replacement for the exact legacy DLLs. Do not run the old Adaptec
+installer or install its XP driver.</p>
+<p>Keep the scanner off during preparation. Have a VM snapshot or another tested
+rollback method before changing a device's driver selection.</p>
+<h2 id="4-set-up-the-private-application-copy">4. Set up the private application copy</h2>
+<p>Open the <strong>normal</strong> manager (no demo banner), then choose <strong>Set up</strong>.</p>
+<p><img alt="The actual setup form with example input paths in demo mode" src="images/02-setup.png" /></p>
+<p>In real mode, use <strong>Browse...</strong> to select your own verified files. The VC++ field
+may be left empty when the required exact DLLs are already in the FlexColor
+source root or <code>%WINDIR%\SysWOW64</code>; otherwise select their containing folder.
+Choose whether to create a desktop shortcut, then <strong>Install</strong>.</p>
+<p>Setup validates the package and inputs, creates a private FlexColor copy under
+<code>%LOCALAPPDATA%\USB2Xchange</code>, and patches that copy. Your original licensed
+installation stays the source for repairs. If asked, open the installed manager.
+Use its <strong>USB2Xchange Manager</strong> and <strong>FlexColor with USB2Xchange</strong> shortcuts for
+later sessions. The per-user application setup does not require elevation.</p>
+<p>If setup rejects a file, check its exact version, size and hash. Do not rename
+another version to satisfy a filename. The <a href="TROUBLESHOOTING.md">troubleshooting guide</a>
+explains common prerequisite and package errors.</p>
+<h2 id="5-configure-the-adapters-two-identities">5. Configure the adapter's two identities</h2>
+<p>Connect only the intended USB2Xchange. Open <strong>Adapter setup</strong> in the manager.
+The adapter first appears as a firmware loader (<strong>PID 2002</strong>), then as an
+operational device (<strong>PID 2003</strong>). Windows must remember WinUSB for both.</p>
+<p><img alt="Adapter setup showing the simulated PID 2002 loader needing WinUSB" src="images/03-adapter-loader.png" /></p>
+<p>In real mode, the left button reads <strong>Open Device Manager</strong>. The demo-only
+<strong>Simulate WinUSB selection</strong> button never appears in normal operation.</p>
+<ol>
+<li>In Device Manager, open the adapter's <strong>Properties → Details → Hardware Ids</strong>.
+   Verify <code>USB\VID_03F3&amp;PID_2002</code> before changing anything. A new device may be
+   under Other devices with Code 28.</li>
+<li>Choose <strong>Update driver → Browse my computer → Let me pick → Universal Serial
+   Bus devices → WinUsb Device</strong>, using Microsoft's signed inbox driver.</li>
+<li>Back in the manager, choose <strong>Refresh</strong>. <code>NeedsInterfaceRegistration</code> means
+   the driver is selected but the project interface GUID is still missing.</li>
+<li>Choose <strong>Register interface</strong>. Read the first-use experimental risk warning;
+   it defaults to No. If you choose to proceed, this real action requests UAC
+   elevation to register only the present adapter's interface and restart it.</li>
+<li>At <code>Ready</code>, PID 2002, choose <strong>Initialize adapter</strong>. This loads the supplied
+   adapter firmware and waits for re-enumeration as PID 2003.</li>
+<li>First-time initialization can time out while the new PID is unbound. Check
+   Hardware Ids again, then repeat WinUSB selection and <strong>Register interface</strong>
+   for <code>USB\VID_03F3&amp;PID_2003</code>.</li>
+</ol>
+<p><img alt="Adapter setup showing the simulated operational PID 2003 ready" src="images/04-adapter-ready.png" /></p>
+<p>You are finished when PID 2003 is <code>Ready</code>. Close Adapter setup. Full details,
+the interface GUID and reconnect notes are in <a href="USB2XCHANGE_WINUSB_SETUP.md">WinUSB setup</a>.
+No project kernel driver, test-signing, root certificate or Secure Boot change
+is needed for this path. Do not select a different device just because its
+name looks similar.</p>
+<h2 id="6-start-scan-and-stop">6. Start, scan and stop</h2>
+<p>Follow the scanner manual for safe SCSI cabling, termination, holder loading and
+power sequence. Set the supported scanner to target 5/LUN 0. Once connected
+and powered correctly, choose <strong>Start FlexColor</strong> or use <strong>FlexColor with
+USB2Xchange</strong>. Subsequent starts handle normal adapter firmware initialization.</p>
+<p><img alt="Manager reporting a simulated running session, not a real FlexColor launch" src="images/05-session.png" /></p>
+<p>In real operation Start checks the scanner identity and launches the prepared
+private FlexColor process. Exact expected identities are <code>Imacon / SCSI Loader /
+L302</code> or <code>Imacon / FlexTight II / M333</code>. FlexColor normally performs the scanner
+microcode initialization itself.</p>
+<p>Within the real FlexColor application, choose your holder and settings, run
+<strong>Preview</strong>, then <strong>Scan</strong>, and save outside the installation to a backed-up
+folder. Check saved dimensions, depth and appearance. The guide deliberately
+does not portray a simulated scan as successful hardware operation.</p>
+<p>To cancel a scan, use <strong>Stop inside FlexColor</strong> and allow cleanup to finish.
+The manager's <strong>Stop FlexColor</strong> closes its managed application session; it is
+not the scan-cancel button. Avoid USB/SCSI disconnects during operation. See
+<a href="DAILY_USE.md">daily use</a> for output checks and sharpening notes.</p>
+<h2 id="7-when-something-needs-attention">7. When something needs attention</h2>
+<table>
+<thead>
+<tr>
+<th>What you see</th>
+<th>What to do next</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Not installed / Start disabled</td>
+<td>Choose Set up with the exact licensed inputs.</td>
+</tr>
+<tr>
+<td>Disconnected</td>
+<td>Check adapter USB connection; choose Refresh.</td>
+</tr>
+<tr>
+<td>Multiple / ambiguous adapters</td>
+<td>Leave only the intended adapter connected before proceeding.</td>
+</tr>
+<tr>
+<td>NeedsWinUsb</td>
+<td>Verify that PID in Device Manager, then select the inbox WinUSB driver.</td>
+</tr>
+<tr>
+<td>NeedsInterfaceRegistration</td>
+<td>Choose Register interface for the currently present PID.</td>
+</tr>
+<tr>
+<td>PID 2002 Ready</td>
+<td>Initialize adapter, then configure PID 2003 if this is first setup.</td>
+</tr>
+<tr>
+<td>PID 2003 Ready, but Start fails</td>
+<td>Check scanner power, SCSI termination/target 5 and the exact error. Avoid repeated blind retries.</td>
+</tr>
+<tr>
+<td>Missing files or hash mismatch</td>
+<td>Check versions and source files; use Repair installation only after correcting the prerequisite.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Open logs</strong> opens the private <code>Usb2XchangeLogs</code> folder in real mode. Review and
+redact paths/device identifiers before sharing a small relevant excerpt. Do not
+upload proprietary files, firmware, full logs or personal scans.</p>
+<p><strong>Repair installation</strong> verifies and rebuilds the private copy from the
+configured sources. <strong>Uninstall</strong> removes this user's private copy, settings
+and shortcuts; it leaves the Microsoft WinUSB selection in place. Close
+FlexColor first and keep scans outside the install tree. Read
+<a href="UNINSTALL.md">uninstall and rollback</a> before removal.</p>
+<p>For unresolved problems use <a href="TROUBLESHOOTING.md">Troubleshooting</a>, then the
+<a href="https://github.com/aidanc/fcusb/issues/new/choose">issue templates</a>.
+Report the release, Windows version, exact error and whether you were in demo
+or real mode. Read <a href="KNOWN_LIMITATIONS.md">known limitations</a>: the updated GUI
+workflow still needs complete clean-VM/hardware qualification. Demo success
+does not change that boundary.</p>
+</main></html>
